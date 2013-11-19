@@ -297,7 +297,7 @@ public class Manager implements TaskListener, TaskSelector {
 		mainName.width = 100;
 		mainName.height = back.height;
 
-		FieldIcon icon = new FieldIcon((ItemStack) task.getReference()) {
+		FieldIcon icon = new FieldIcon(task) {
 			@Override
 			public void onGuiClick(int mousex, int mousey) {
 				if (LayoutManager.itemPanel.contains(mousex, mousey) && changing) {
@@ -305,9 +305,10 @@ public class Manager implements TaskListener, TaskSelector {
 					if (item != null) {
 						ItemStack stack2 = item.getItemStack();
 						task.setReference(stack2);
+						
 						if (task.getName().isEmpty())
 							task.setName("Make " + (stack2.getDisplayName().substring(0, 1).matches("[aeiouAEIOU]"	) ? "an" : "a") + " " + stack2.getDisplayName());
-						displayTask(task);
+						
 						changing = false;
 					}
 				}
@@ -315,6 +316,8 @@ public class Manager implements TaskListener, TaskSelector {
 		};
 		icon.x = mainName.x + mainName.width + 4;
 		icon.y = mainName.y + 2;
+		icon.width = 18;
+		icon.height = 18;
 
 		FieldCompletedCheckbox checkbox = new FieldCompletedCheckbox(task);
 		checkbox.width = checkbox.contentWidth() + 6;
@@ -388,10 +391,34 @@ public class Manager implements TaskListener, TaskSelector {
 				subDelete.y = subCheckbox.y + subCheckbox.height;
 				subDelete.height = subCheckbox.height;
 				subDelete.width = subCheckbox.width;
+				
+				FieldIcon subicon = new FieldIcon(sub) {
+					@Override
+					public void onGuiClick(int mousex, int mousey) {
+						if (LayoutManager.itemPanel.contains(mousex, mousey) && changing) {
+							ItemPanelSlot item = LayoutManager.itemPanel.getSlotMouseOver(mousex, mousey);
+							if (item != null) {
+								ItemStack stack2 = item.getItemStack();
+								sub.setReference(stack2);
+								
+								if (sub.getName().isEmpty())
+									sub.setName("Make " + (stack2.getDisplayName().substring(0, 1).matches("[aeiouAEIOU]"	) ? "an" : "a") + " " + stack2.getDisplayName());
+								
+								changing = false;
+							}
+						}
+					}
+				};
+				subicon.x = icon.x;
+				subicon.y = subName.y + 2;
+				subicon.height = icon.height - 2;
+				subicon.width = icon.width - 2;
+				subicon.offset = 1;
 
 				drawWidgets.add(subDelete);
 				drawWidgets.add(subCheckbox);
 				drawWidgets.add(subName);
+				drawWidgets.add(subicon);
 				n++;
 			}
 		}

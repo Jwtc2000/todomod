@@ -3,6 +3,10 @@ package com.shirkit.gui;
 import static codechicken.core.gui.GuiDraw.drawString;
 import static codechicken.core.gui.GuiDraw.getStringWidth;
 
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.lwjgl.input.Keyboard;
 
 import codechicken.nei.TextField;
@@ -10,7 +14,7 @@ import codechicken.nei.TextField;
 import com.shirkit.logic.Task;
 import com.shirkit.logic.TaskListener;
 
-public class FieldMainName extends TextField {
+public class FieldMainName extends TextField implements TaskListener {
 
 	private Task task;
 	private TaskListener listener;
@@ -19,15 +23,20 @@ public class FieldMainName extends TextField {
 	public FieldMainName(Task task) {
 		super(task.toString());
 		this.task = task;
+		this.task.setListener(this);
 		setText(task.getName());
 	}
 
 	public void setListener(TaskListener listener) {
 		this.listener = listener;
 	}
-	
+
 	@Override
 	public void onTextChange(String oldText) {
+		if (updating)
+			return;
+		else
+			move = 0;
 		task.setName(this.text());
 		if (listener != null)
 			listener.update(task);
@@ -43,7 +52,7 @@ public class FieldMainName extends TextField {
 			int startOffset = drawtext.length() - getMaxTextLength();
 			if (startOffset < 0 || startOffset > drawtext.length())
 				startOffset = 0;
-			drawtext = drawtext.substring(startOffset + move, startOffset + getMaxTextLength() + move);
+			drawtext = drawtext.substring(startOffset + move, getMaxTextLength() + move + startOffset);
 			if (move != 0)
 				drawtext += "..";
 			if (move != -text().length() + getMaxTextLength())
@@ -62,7 +71,7 @@ public class FieldMainName extends TextField {
 	}
 
 	private int getMaxTextLength() {
-		return width / 6;
+		return width / 6 + 1;
 	}
 
 	@Override
@@ -102,6 +111,31 @@ public class FieldMainName extends TextField {
 			return focused() ? 0xFFAA0000 : 0xFFFF0000;
 		else
 			return focused() ? 0xFFE0E0E0 : 0xFF909090;
+	}
+
+	@Override
+	public List<String> handleTooltip(int mx, int my, List<String> tooltip) {
+		if (!contains(mx, my) || focused())
+			return tooltip;
+
+		Pattern regex = Pattern.compile("(.{1,20}(?:\\s|$))|(.{0,20})",
+				Pattern.DOTALL);
+		Matcher regexMatcher = regex.matcher(text());
+		while (regexMatcher.find()) {
+			if (!regexMatcher.group().isEmpty())
+				tooltip.add(regexMatcher.group());
+		}
+
+		return tooltip;
+	}
+
+	private boolean updating = false;
+
+	@Override
+	public void update(Task task) {
+		updating = true;
+		setText(task.getName());
+		updating = false;
 	}
 
 }

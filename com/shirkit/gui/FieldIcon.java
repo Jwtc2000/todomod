@@ -4,6 +4,9 @@ import java.util.List;
 
 import org.lwjgl.input.Keyboard;
 
+import com.shirkit.logic.Task;
+import com.shirkit.logic.TaskListener;
+
 import net.minecraft.item.ItemStack;
 import codechicken.core.gui.GuiDraw;
 import codechicken.nei.ItemPanelStack;
@@ -11,28 +14,31 @@ import codechicken.nei.Widget;
 import codechicken.nei.recipe.GuiCraftingRecipe;
 import codechicken.nei.recipe.GuiUsageRecipe;
 
-public class FieldIcon extends Widget {
+public class FieldIcon extends Widget implements TaskListener {
 
 	private ItemPanelStack stack;
 	public boolean changing;
-	public int x, y;
+	public int x, y, offset;
+	private Task task;
 
-	public FieldIcon(ItemStack itemstack) {
+	public FieldIcon(Task task) {
 		super();
-		this.stack = new ItemPanelStack(itemstack);
+		this.task = task;
+		this.task.setListener(this);
+		this.stack = new ItemPanelStack(task.getReference());
 	}
 
 	@Override
 	public void draw(int mousex, int mousey) {
-		GuiDraw.drawRect(x - 2, y - 2, 20, 20, 0xffA0A0A0);
+		GuiDraw.drawRect(x - 2, y - 2, width + 2, height + 2, 0xffA0A0A0);
 
 		if (changing)
-			GuiDraw.drawRect(x - 1, y - 1, 18, 18, 0xee555555);
+			GuiDraw.drawRect(x - 1, y - 1, width, height, 0xee555555);
 		else
-			GuiDraw.drawRect(x - 1, y - 1, 18, 18, 0xee000000);
+			GuiDraw.drawRect(x - 1, y - 1, width, height, 0xee000000);
 
 		if (stack.item != null)
-			stack.draw(x, y);
+			stack.draw(x - offset, y - offset);
 	}
 
 	@Override
@@ -91,5 +97,10 @@ public class FieldIcon extends Widget {
 				tooltip.add("ESC to cancel");
 		}
 		return tooltip;
+	}
+
+	@Override
+	public void update(Task task) {
+		this.stack = new ItemPanelStack(task.getReference());
 	}
 }

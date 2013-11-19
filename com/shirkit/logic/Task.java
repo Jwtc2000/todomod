@@ -3,12 +3,14 @@ package com.shirkit.logic;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Task {
+import net.minecraft.item.ItemStack;
 
+public class Task {
+	
 	private String name;
 	private int prirority;
 	private boolean completed;
-	private Object reference;
+	private ItemStack reference;
 	private List<Task> subtasks;
 	private List<TaskListener> listeners;
 
@@ -48,11 +50,11 @@ public class Task {
 		updateListener();
 	}
 
-	public Object getReference() {
+	public ItemStack getReference() {
 		return reference;
 	}
 
-	public void setReference(Object reference) {
+	public void setReference(ItemStack reference) {
 		this.reference = reference;
 		updateListener();
 	}
