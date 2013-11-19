@@ -60,12 +60,12 @@ public class Manager implements TaskListener, TaskSelector {
 	private Task creatingTask;
 
 	private Manager() {
-		activeTasks = new ArrayList<>();
-		completedTasks = new ArrayList<>();
+		activeTasks = new ArrayList<Task>();
+		completedTasks = new ArrayList<Task>();
 		sorter = new Sorter();
-		widgetMap = new HashMap<>();
-		drawWidgets = new ArrayList<>();
-		stack = new Stack<>();
+		widgetMap = new HashMap<Task, List<Widget>>();
+		drawWidgets = new ArrayList<Widget>();
+		stack = new Stack<Task>();
 	}
 
 	public Collection<Widget> getWidgets() {
@@ -229,7 +229,7 @@ public class Manager implements TaskListener, TaskSelector {
 		textfield.width = 100;
 		textfield.setSelector(instance);
 
-		List<Widget> list = new ArrayList<>(2);
+		List<Widget> list = new ArrayList<Widget>(2);
 		list.add(checkbox);
 		list.add(textfield);
 		drawWidgets.addAll(list);

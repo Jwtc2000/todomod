@@ -17,7 +17,7 @@ public class Task {
 		this.prirority = 0;
 		this.completed = false;
 		this.reference = null;
-		this.subtasks = new ArrayList<>();
+		this.subtasks = new ArrayList<Task>();
 		this.listeners = new ArrayList<TaskListener>();
 	}
 
