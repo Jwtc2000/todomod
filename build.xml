@@ -2,6 +2,7 @@
 <!-- I'd like to thank mistaqur from NEIPlugins for this build script -->
 <project name="ToDoModShirkit">
 	<property file="build.properties" prefix="build" />
+	<property file="version.properties" prefix="version" />
 
 	<property name="forge.url" value="http://files.minecraftforge.net/minecraftforge/minecraftforge-src-${build.mc.version}-${build.forge.version}.zip" />
 	<property name="forge.path" value="${build.root}/forge-${build.forge.version}-neiat" />
@@ -9,11 +10,12 @@
 	<property name="mcp.path.absolute" location="${build.root}/forge-${build.forge.version}-neiat/mcp" />
 	<property name="python.path.absolute" location="${mcp.path.absolute}/runtime/bin/python/python_mcp" />
 	<property name="src.path" value="${mcp.path}/src/minecraft" />
-	<property name="nei.src" value="${build.root}/nei-src" />
-	<property name="ccc.src" value="${build.root}/ccc-src" />
-
+	<property name="build.number" value="${version.major.number}.${version.minor.number}.${version.revision.number}" />
+	
 	<target name="init">
 		<mkdir dir="${build.root}" />
+		<mkdir dir="${build.root}/downloads" />
+		<mkdir dir="${build.root}/dist" />
 		<echo>Build started in ${build.root}</echo>
 		<available property="forge.installed" file="${forge.path}/ok" />
 		<available property="forge.prepared" file="${forge.path}/prepare" />
@@ -22,15 +24,15 @@
 
 	<target name="download" depends="init" unless="forge.prepared">
 		<echo>Downloading forge ${build.forge.version} for MC ${build.mc.version}</echo>
-		<get src="${forge.url}" dest="${build.root}/forge-${build.mc.version}-${build.forge.version}.zip" verbose="true" usetimestamp="true" />
-		<get src="${build.ccc.url}" dest="${build.root}" verbose="true" usetimestamp="true" />
-		<get src="${build.nei.url}" dest="${build.root}" verbose="true" usetimestamp="true" />
+		<get src="${forge.url}" dest="${build.root}/downloads/forge-${build.mc.version}-${build.forge.version}.zip" verbose="true" usetimestamp="true" />
+		<get src="${build.ccc.url}" dest="${build.root}/downloads" verbose="true" usetimestamp="true" />
+		<get src="${build.nei.url}" dest="${build.root}/downloads" verbose="true" usetimestamp="true" />
 	</target>
 
 	<target name="forge.prepare" depends="download" unless="forge.prepared">
 		<delete dir="${forge.path}" quiet="true" />
 
-		<unzip src="${build.root}/forge-${build.mc.version}-${build.forge.version}.zip" dest="${forge.path}">
+		<unzip src="${build.root}/downloads/forge-${build.mc.version}-${build.forge.version}.zip" dest="${forge.path}">
 			<mapper>
 				<globmapper from="forge/*" to="*" />
 			</mapper>
@@ -55,31 +57,19 @@
 		<!--  -->
 
 		<copy todir="${mcp.path}/lib" overwrite="true">
-			<fileset dir="${build.root}">
+			<fileset dir="${build.root}/downloads">
 				<include name="*.jar" />
 			</fileset>
 		</copy>
 
 		<copy todir="${mcp.path}/jars/mods" overwrite="true">
-			<fileset dir="${build.root}">
+			<fileset dir="${build.root}/downloads">
 				<include name="*.jar" />
 			</fileset>
 		</copy>
 		
 		<touch file="${forge.path}/nei" />
 	</target>
-
-	<path id="compile.classpath">
-		<!-- <pathelement location="${mcp.path}/lib"/>
-		<pathelement location="${mcp.path}/lib/guava-14.0-rc3.jar"/> -->
-		<fileset dir="${mcp.path}/lib">
-			<include name="**/*.jar" />
-		</fileset>
-		<pathelement location="${mcp.path}/jars/bin/minecraft.jar" />
-		<pathelement location="${mcp.path}/jars/bin/jinput.jar" />
-		<pathelement location="${mcp.path}/jars/bin/lwjgl_util.jar" />
-		<pathelement location="${mcp.path}/jars/bin/lwjgl.jar" />
-	</path>
 
 	<path id="additionalSources">
 	</path>
@@ -90,7 +80,7 @@
 			<fileset dir="./" includes="com/**/*.java" />
 			<path refid="additionalSources" />
 			<filterset>
-				<filter token="VERSION" value="${build.version}" />
+				<filter token="VERSION" value="${build.number}" />
 				<filter token="DEPENDENCIES" value="${build.dependencies}" />
 			</filterset>
 		</copy>
@@ -100,7 +90,7 @@
 		<delete dir="${mcp.path}/bin/minecraft/com/shirkit" quiet="true" />
 		<copy file="./mcmod.info" todir="${mcp.path}/bin/minecraft" overwrite="true">
 			<filterset>
-				<filter token="VERSION" value="${build.version}" />
+				<filter token="VERSION" value="${build.number}" />
 			</filterset>
 		</copy>
 		<exec dir="${mcp.path.absolute}" executable="${python.path.absolute}" failonerror="true">
@@ -123,9 +113,44 @@
 
 	<target name="package">
 		<echo>Creating JAR</echo>
-		<jar destfile="${build.root}/dist/ToDo-Mod-${build.version}.jar">
+		<jar destfile="${build.root}/dist/ToDo-Mod-${build.number}.jar">
 			<fileset dir="${mcp.path}/reobf/minecraft/" includes="com/shirkit/" />
 			<fileset dir="${mcp.path}/bin/minecraft" includes="mcmod.info" />
 		</jar>
+	</target>
+	
+	<target name="release">
+	
+		<echo>Current build number: ${build.number}</echo>
+		<input message="Did you incremented the version [major/minor/revision]?" validargs="y,n" addproperty="do.increment" />
+		<condition property="do.abort">
+			<equals arg1="n" arg2="${do.increment}"/>
+		</condition>
+		<fail if="do.abort">Aborted.</fail>
+		
+		<antcall target="todo.compile" />
+		<antcall target="reobfuscate" />
+		<antcall target="package" />
+	</target>
+	
+	<target name="major">
+		<propertyfile  file="version.properties">
+				<entry key="major.number" type="int" operation="+" value="1" />
+				<entry key="minor.number" type="int" value="0" />
+				<entry key="revision.number" type="int" value="0" />
+		</propertyfile>
+	</target>
+	
+	<target name="minor">
+		<propertyfile  file="version.properties">
+				<entry key="minor.number" type="int" operation="+" value="1" />
+				<entry key="revision.number" type="int" value="0" />
+		</propertyfile>
+	</target>
+	
+	<target name="revision">
+		<propertyfile  file="version.properties">
+				<entry key="revision.number" type="int" operation="+" value="1" />
+		</propertyfile>
 	</target>
 </project>
