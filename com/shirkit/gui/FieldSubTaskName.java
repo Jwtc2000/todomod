@@ -2,7 +2,7 @@ package com.shirkit.gui;
 
 import org.lwjgl.input.Keyboard;
 
-import com.shirkit.logic.Task;
+import com.shirkit.entity.Task;
 
 import codechicken.nei.TextField;
 

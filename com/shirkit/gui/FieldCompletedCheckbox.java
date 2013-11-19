@@ -2,7 +2,7 @@ package com.shirkit.gui;
 
 import codechicken.nei.Button;
 
-import com.shirkit.logic.Task;
+import com.shirkit.entity.Task;
 import com.shirkit.logic.TaskListener;
 
 public class FieldCompletedCheckbox extends Button implements TaskListener {

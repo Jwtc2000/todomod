@@ -9,7 +9,7 @@ import com.shirkit.logic.Manager;
 
 public class DrawHandler implements IContainerDrawHandler {
 
-	private boolean init = true;
+	public static boolean init = true;
 
 	@Override
 	public void onPreDraw(GuiContainer gui) {

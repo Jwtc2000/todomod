@@ -18,12 +18,12 @@ public class NEITodoConfig implements IConfigureNEI {
 
 	@Override
 	public String getName() {
-		return "Todo";
+		return "To-Do Mod";
 	}
 
 	@Override
 	public String getVersion() {
-		return "0.1";
+		return "@VERSION@";
 	}
 
 }

@@ -17,6 +17,8 @@ import codechicken.nei.NEIClientConfig;
 import codechicken.nei.Widget;
 
 import com.shirkit.entity.Options;
+import com.shirkit.entity.Task;
+import com.shirkit.entity.TaskHolder;
 import com.shirkit.gui.FieldButtonName;
 import com.shirkit.gui.FieldCompletedCheckbox;
 import com.shirkit.gui.FieldIcon;
@@ -35,6 +37,20 @@ public class Manager implements TaskListener, TaskSelector {
 		if (instance == null) {
 			instance = new Manager();
 		}
+		return instance;
+	}
+
+	public static Manager newInstance(TaskHolder holder) {
+		instance = new Manager();
+		if (holder.getActiveTasks() != null)
+			instance.activeTasks.addAll(holder.getActiveTasks());
+		if (holder.getCompletedTasks() != null)
+			instance.completedTasks.addAll(holder.getCompletedTasks());
+		return instance;
+	}
+
+	public static Manager newInstance() {
+		instance = new Manager();
 		return instance;
 	}
 
@@ -99,8 +115,8 @@ public class Manager implements TaskListener, TaskSelector {
 			@Override
 			public boolean onButtonPress(boolean rightclick) {
 				Task t = new Task();
-				//t.setName("New task " + (activeTasks.size() + completedTasks.size()));
 				addTask(t);
+				activeTasks.add(t);
 				selectTask(t);
 				tempName.setFocus(true);
 				tempName.setText("");
@@ -130,6 +146,11 @@ public class Manager implements TaskListener, TaskSelector {
 		nextPage.width = nextPage.contentWidth() + 6;
 		nextPage.x = addTask.x + addTask.width + offsetx;
 		nextPage.y = addTask.y;
+
+		for (Task task : activeTasks)
+			addTask(task);
+		for (Task task : completedTasks)
+			addTask(task);
 
 		updateMainPage();
 	}
@@ -213,7 +234,7 @@ public class Manager implements TaskListener, TaskSelector {
 	}
 
 	private boolean addTask(final Task task) {
-		if (activeTasks.contains(task))
+		if (widgetMap.get(task) != null)
 			return false;
 
 		FieldCompletedCheckbox checkbox = new FieldCompletedCheckbox(task);
@@ -234,10 +255,6 @@ public class Manager implements TaskListener, TaskSelector {
 		list.add(textfield);
 		drawWidgets.addAll(list);
 		widgetMap.put(task, list);
-
-		activeTasks.add(task);
-
-		updateMainPage();
 
 		return true;
 	}
@@ -305,10 +322,10 @@ public class Manager implements TaskListener, TaskSelector {
 					if (item != null) {
 						ItemStack stack2 = item.getItemStack();
 						task.setReference(stack2);
-						
+
 						if (task.getName().isEmpty())
-							task.setName("Make " + (stack2.getDisplayName().substring(0, 1).matches("[aeiouAEIOU]"	) ? "an" : "a") + " " + stack2.getDisplayName());
-						
+							task.setName("Make " + (stack2.getDisplayName().substring(0, 1).matches("[aeiouAEIOU]") ? "an" : "a") + " " + stack2.getDisplayName());
+
 						changing = false;
 					}
 				}
@@ -350,12 +367,12 @@ public class Manager implements TaskListener, TaskSelector {
 					@Override
 					public boolean handleClick(int mousex, int mousey, int button) {
 						boolean s = super.handleClick(mousex, mousey, button);
-						
+
 						if (button == 2) {
 							selectTask(sub);
 							s = true;
 						}
-						
+
 						return s;
 					}
 				};
@@ -391,7 +408,7 @@ public class Manager implements TaskListener, TaskSelector {
 				subDelete.y = subCheckbox.y + subCheckbox.height;
 				subDelete.height = subCheckbox.height;
 				subDelete.width = subCheckbox.width;
-				
+
 				FieldIcon subicon = new FieldIcon(sub) {
 					@Override
 					public void onGuiClick(int mousex, int mousey) {
@@ -400,10 +417,10 @@ public class Manager implements TaskListener, TaskSelector {
 							if (item != null) {
 								ItemStack stack2 = item.getItemStack();
 								sub.setReference(stack2);
-								
+
 								if (sub.getName().isEmpty())
-									sub.setName("Make " + (stack2.getDisplayName().substring(0, 1).matches("[aeiouAEIOU]"	) ? "an" : "a") + " " + stack2.getDisplayName());
-								
+									sub.setName("Make " + (stack2.getDisplayName().substring(0, 1).matches("[aeiouAEIOU]") ? "an" : "a") + " " + stack2.getDisplayName());
+
 								changing = false;
 							}
 						}
@@ -468,5 +485,13 @@ public class Manager implements TaskListener, TaskSelector {
 		public int compare(Task o1, Task o2) {
 			return o1.getPrirority() - o2.getPrirority();
 		}
+	}
+
+	public List<Task> getActiveTasks() {
+		return activeTasks;
+	}
+
+	public List<Task> getCompletedTasks() {
+		return completedTasks;
 	}
 }

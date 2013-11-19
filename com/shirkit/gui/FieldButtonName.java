@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 import codechicken.nei.Button;
 
-import com.shirkit.logic.Task;
+import com.shirkit.entity.Task;
 import com.shirkit.logic.TaskListener;
 import com.shirkit.logic.TaskSelector;
 

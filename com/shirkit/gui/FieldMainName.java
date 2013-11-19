@@ -11,7 +11,7 @@ import org.lwjgl.input.Keyboard;
 
 import codechicken.nei.TextField;
 
-import com.shirkit.logic.Task;
+import com.shirkit.entity.Task;
 import com.shirkit.logic.TaskListener;
 
 public class FieldMainName extends TextField implements TaskListener {
@@ -33,10 +33,10 @@ public class FieldMainName extends TextField implements TaskListener {
 
 	@Override
 	public void onTextChange(String oldText) {
-		if (updating)
+		move = 0;
+		if (updating) {
 			return;
-		else
-			move = 0;
+		}
 		task.setName(this.text());
 		if (listener != null)
 			listener.update(task);

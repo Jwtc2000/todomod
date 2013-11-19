@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.lwjgl.input.Keyboard;
 
-import com.shirkit.logic.Task;
+import com.shirkit.entity.Task;
 import com.shirkit.logic.TaskListener;
 
 import net.minecraft.item.ItemStack;
