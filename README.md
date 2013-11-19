@@ -7,9 +7,9 @@ The mod is still in development and may have bugs.
 
 This mod requires:
 
-- Minecraft 1.6
-- Forge supporting MC 1.6
-- NEI 1.6 or newer
-- CodeChickenCore 0.9.3 or newer
+- Minecraft 1.6.4
+- Forge supporting MC 1.6.4
+- NEI 1.6.1.5 or newer
+- CodeChickenCore 0.9.0.7 or newer
 
 Please refer to https://github.com/Shirkit/todomod/wiki for the Known Issues and TODO list

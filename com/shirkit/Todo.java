@@ -9,9 +9,11 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
-@Mod(modid = "Todo", name = "Todo mod", version = "0.1", dependencies = "after:NotEnoughItems")
+@Mod(modid = "ToDoModShirkit", name = "To-Do Mod List", version = "0.1", dependencies = "@DEPENDENCIES@")
 public class Todo {
 
+	public static String VERSION = "@VERSION@";
+	
 	/** Forge configuration **/
 	@Instance
 	public static Todo instance;

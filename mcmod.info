@@ -1,0 +1,13 @@
+[
+{
+  "modid": "ToDoModShirkit",
+  "name": "To-Do Mod List",
+  "credits": "ChickenBones",
+  "version": "@VERSION@",
+  "url": "https://github.com/Shirkit/todomod",
+  "authors": [ "Shirkit (shirkitx)" ],
+  "dependencies": [
+     "NotEnoughItems"
+  ]
+}
+]

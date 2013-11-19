@@ -13,7 +13,7 @@ public class TooltipHandler implements IContainerTooltipHandler {
 
 	@Override
 	public List<String> handleTooltipFirst(GuiContainer gui, int mousex, int mousey, List<String> currenttip) {
-		if (gui.manager.shouldShowTooltip())
+		//if (gui.manager.shouldShowTooltip()) Can't use this and obfuscate the code
 			for (Widget widget : Manager.instance().getWidgets())
 				currenttip = widget.handleTooltip(mousex, mousey, currenttip);
 		return currenttip;
