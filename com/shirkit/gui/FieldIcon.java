@@ -1,18 +1,20 @@
 package com.shirkit.gui;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.input.Keyboard;
 
-import com.shirkit.entity.Task;
-import com.shirkit.logic.TaskListener;
-
-import net.minecraft.item.ItemStack;
 import codechicken.core.gui.GuiDraw;
 import codechicken.nei.ItemPanelStack;
 import codechicken.nei.Widget;
 import codechicken.nei.recipe.GuiCraftingRecipe;
 import codechicken.nei.recipe.GuiUsageRecipe;
+
+import com.shirkit.entity.Task;
+import com.shirkit.logic.TaskListener;
+
+import net.minecraft.item.ItemStack;
 
 public class FieldIcon extends Widget implements TaskListener {
 
@@ -65,7 +67,7 @@ public class FieldIcon extends Widget implements TaskListener {
 			return true;
 
 		case 2:
-			changing = true;
+			changing = !changing;
 			return true;
 
 		default:

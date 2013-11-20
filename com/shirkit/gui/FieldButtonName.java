@@ -21,6 +21,7 @@ public class FieldButtonName extends Button implements TaskListener {
 		this.task.setListener(this);
 		this.label = task.getName();
 		this.realLabel = this.label;
+		update(task);
 	}
 
 	@Override
