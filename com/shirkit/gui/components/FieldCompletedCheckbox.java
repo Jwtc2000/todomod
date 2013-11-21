@@ -1,11 +1,11 @@
-package com.shirkit.gui;
+package com.shirkit.gui.components;
 
 import codechicken.nei.Button;
 
 import com.shirkit.entity.Task;
 import com.shirkit.logic.TaskListener;
 
-public class FieldCompletedCheckbox extends Button implements TaskListener {
+public abstract class FieldCompletedCheckbox extends Button implements TaskListener {
 
 	private Task task;
 	private String tip;
@@ -17,12 +17,6 @@ public class FieldCompletedCheckbox extends Button implements TaskListener {
 	}
 
 	@Override
-	public boolean onButtonPress(boolean rightclick) {
-		task.setCompleted(!task.isCompleted());
-		return true;
-	}
-
-	@Override
 	public String getButtonTip() {
 		return tip;
 	}
@@ -31,5 +25,9 @@ public class FieldCompletedCheckbox extends Button implements TaskListener {
 	public void update(Task task) {
 		this.label = task.isCompleted() ? "X" : "V";
 		this.tip = task.isCompleted() ? "Mark as incompleted" : "Complete task";
+	}
+	
+	public Task getTask() {
+		return task;
 	}
 }

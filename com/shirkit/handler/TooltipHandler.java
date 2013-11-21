@@ -2,7 +2,7 @@ package com.shirkit.handler;
 
 import java.util.List;
 
-import com.shirkit.logic.Manager;
+import com.shirkit.manager.Manager;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
@@ -13,9 +13,9 @@ public class TooltipHandler implements IContainerTooltipHandler {
 
 	@Override
 	public List<String> handleTooltipFirst(GuiContainer gui, int mousex, int mousey, List<String> currenttip) {
-		//if (gui.manager.shouldShowTooltip()) Can't use this and obfuscate the code
-			for (Widget widget : Manager.instance().getWidgets())
-				currenttip = widget.handleTooltip(mousex, mousey, currenttip);
+		// if (gui.manager.shouldShowTooltip()) Can't use this and obfuscate the code
+		for (Widget widget : Manager.getLayout().getToDraw())
+			currenttip = widget.handleTooltip(mousex, mousey, currenttip);
 		return currenttip;
 	}
 

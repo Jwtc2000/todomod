@@ -1,4 +1,4 @@
-package com.shirkit.gui;
+package com.shirkit.gui.components;
 
 import java.util.ArrayList;
 import java.util.List;

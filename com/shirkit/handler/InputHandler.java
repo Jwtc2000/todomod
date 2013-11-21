@@ -1,6 +1,6 @@
 package com.shirkit.handler;
 
-import com.shirkit.logic.Manager;
+import com.shirkit.manager.Manager;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import codechicken.nei.Widget;
@@ -10,7 +10,7 @@ public class InputHandler implements IContainerInputHandler {
 
 	@Override
 	public boolean keyTyped(GuiContainer gui, char keyChar, int keyCode) {
-		for (Widget widget : Manager.instance().getWidgets()) {
+		for (Widget widget : Manager.getLayout().getToDraw()) {
 			if (widget.handleKeyPress(keyCode, keyChar))
 				return true;
 		}
@@ -31,7 +31,7 @@ public class InputHandler implements IContainerInputHandler {
 	@Override
 	public boolean mouseClicked(GuiContainer gui, int mousex, int mousey, int button) {
 
-		for (Widget widget : Manager.instance().getWidgets()) {
+		for (Widget widget : Manager.getLayout().getToDraw()) {
 			widget.onGuiClick(mousex, mousey);
 			if (widget.contains(mousex, mousey) ? widget.handleClick(mousex, mousey, button) : widget.handleClickExt(mousex, mousey, button))
 				return true;
@@ -43,7 +43,7 @@ public class InputHandler implements IContainerInputHandler {
 	@Override
 	public void onMouseClicked(GuiContainer gui, int mousex, int mousey, int button) {
 
-		for (Widget widget : Manager.instance().getWidgets()) {
+		for (Widget widget : Manager.getLayout().getToDraw()) {
 			widget.onGuiClick(mousex, mousey);
 		}
 	}
@@ -54,7 +54,7 @@ public class InputHandler implements IContainerInputHandler {
 
 	@Override
 	public boolean mouseScrolled(GuiContainer gui, int mousex, int mousey, int scrolled) {
-		for (Widget widget : Manager.instance().getWidgets()) {
+		for (Widget widget : Manager.getLayout().getToDraw()) {
 			if (widget.onMouseWheel(scrolled, mousex, mousey))
 				return true;
 		}

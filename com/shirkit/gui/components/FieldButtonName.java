@@ -1,4 +1,4 @@
-package com.shirkit.gui;
+package com.shirkit.gui.components;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -10,29 +10,19 @@ import com.shirkit.entity.Task;
 import com.shirkit.logic.TaskListener;
 import com.shirkit.logic.TaskSelector;
 
-public class FieldButtonName extends Button implements TaskListener {
+public abstract class FieldButtonName extends Button implements TaskListener {
 
 	private Task task;
-	private TaskSelector selector;
 	private String realLabel;
 
-	public FieldButtonName(Task task) {
+	public FieldButtonName(Task task, int height, int width) {
 		this.task = task;
 		this.task.setListener(this);
 		this.label = task.getName();
 		this.realLabel = this.label;
+		this.height = height;
+		this.width = width;
 		update(task);
-	}
-
-	@Override
-	public boolean onButtonPress(boolean rightclick) {
-		if (selector != null)
-			selector.selectTask(task);
-		return true;
-	}
-
-	public void setSelector(TaskSelector selector) {
-		this.selector = selector;
 	}
 
 	@Override
@@ -63,5 +53,9 @@ public class FieldButtonName extends Button implements TaskListener {
 		}
 		
 		return tooltip;
+	}
+	
+	public Task getTask() {
+		return task;
 	}
 }

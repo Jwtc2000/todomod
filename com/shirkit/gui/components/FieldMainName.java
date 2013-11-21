@@ -1,4 +1,4 @@
-package com.shirkit.gui;
+package com.shirkit.gui.components;
 
 import static codechicken.core.gui.GuiDraw.drawString;
 import static codechicken.core.gui.GuiDraw.getStringWidth;

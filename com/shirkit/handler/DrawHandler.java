@@ -1,11 +1,12 @@
 package com.shirkit.handler;
 
+import com.shirkit.manager.Manager;
+
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
 import codechicken.nei.Widget;
+import codechicken.nei.forge.GuiContainerManager;
 import codechicken.nei.forge.IContainerDrawHandler;
-
-import com.shirkit.logic.Manager;
 
 public class DrawHandler implements IContainerDrawHandler {
 
@@ -14,14 +15,14 @@ public class DrawHandler implements IContainerDrawHandler {
 	@Override
 	public void onPreDraw(GuiContainer gui) {
 		if (init) {
-			Manager.instance().init(gui);
+			Manager.init(gui);
 			init = false;
 		}
 	}
 
 	@Override
 	public void renderObjects(GuiContainer gui, int mousex, int mousey) {
-		for (Widget widget : Manager.instance().getWidgets()) {
+		for (Widget widget : Manager.getLayout().getToDraw()) {
 			widget.draw(mousex, mousey);
 		}
 	}
