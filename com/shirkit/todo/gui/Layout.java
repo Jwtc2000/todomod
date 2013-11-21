@@ -1,4 +1,4 @@
-package com.shirkit.gui;
+package com.shirkit.todo.gui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,14 +13,14 @@ import codechicken.nei.TextField;
 import codechicken.nei.Widget;
 import codechicken.nei.ItemPanel.ItemPanelSlot;
 
-import com.shirkit.entity.Options;
-import com.shirkit.entity.Task;
-import com.shirkit.entity.TaskHolder;
-import com.shirkit.gui.components.FieldButtonName;
-import com.shirkit.gui.components.FieldCompletedCheckbox;
-import com.shirkit.gui.components.FieldIcon;
-import com.shirkit.gui.components.FieldMainName;
-import com.shirkit.logic.TaskListener;
+import com.shirkit.todo.entity.Options;
+import com.shirkit.todo.entity.Task;
+import com.shirkit.todo.entity.TaskHolder;
+import com.shirkit.todo.gui.components.FieldButtonName;
+import com.shirkit.todo.gui.components.FieldCompletedCheckbox;
+import com.shirkit.todo.gui.components.FieldIcon;
+import com.shirkit.todo.gui.components.FieldMainName;
+import com.shirkit.todo.logic.TaskListener;
 
 public class Layout {
 

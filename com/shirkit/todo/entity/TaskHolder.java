@@ -1,4 +1,4 @@
-package com.shirkit.entity;
+package com.shirkit.todo.entity;
 
 import java.util.ArrayList;
 import java.util.List;

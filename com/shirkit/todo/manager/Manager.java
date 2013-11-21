@@ -1,10 +1,10 @@
-package com.shirkit.manager;
+package com.shirkit.todo.manager;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 
-import com.shirkit.entity.TaskHolder;
-import com.shirkit.gui.Layout;
-import com.shirkit.logic.Logic;
+import com.shirkit.todo.entity.TaskHolder;
+import com.shirkit.todo.gui.Layout;
+import com.shirkit.todo.logic.Logic;
 
 public class Manager {
 

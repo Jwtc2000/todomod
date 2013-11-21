@@ -1,6 +1,6 @@
-package com.shirkit.gui;
+package com.shirkit.todo.gui;
 
-import com.shirkit.entity.Task;
+import com.shirkit.todo.entity.Task;
 
 public interface GuiListener {
 

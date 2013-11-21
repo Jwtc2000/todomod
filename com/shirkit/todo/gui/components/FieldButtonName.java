@@ -1,4 +1,4 @@
-package com.shirkit.gui.components;
+package com.shirkit.todo.gui.components;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -6,9 +6,9 @@ import java.util.regex.Pattern;
 
 import codechicken.nei.Button;
 
-import com.shirkit.entity.Task;
-import com.shirkit.logic.TaskListener;
-import com.shirkit.logic.TaskSelector;
+import com.shirkit.todo.entity.Task;
+import com.shirkit.todo.logic.TaskListener;
+import com.shirkit.todo.logic.TaskSelector;
 
 public abstract class FieldButtonName extends Button implements TaskListener {
 

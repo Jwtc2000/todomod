@@ -1,15 +1,15 @@
-package com.shirkit.logic;
+package com.shirkit.todo.logic;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Stack;
 
-import com.shirkit.entity.Options;
-import com.shirkit.entity.Task;
-import com.shirkit.entity.TaskHolder;
-import com.shirkit.gui.GuiListener;
-import com.shirkit.gui.GuiMessage;
-import com.shirkit.gui.Layout;
+import com.shirkit.todo.entity.Options;
+import com.shirkit.todo.entity.Task;
+import com.shirkit.todo.entity.TaskHolder;
+import com.shirkit.todo.gui.GuiListener;
+import com.shirkit.todo.gui.GuiMessage;
+import com.shirkit.todo.gui.Layout;
 
 public class Logic implements GuiListener {
 

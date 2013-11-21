@@ -1,4 +1,4 @@
-package com.shirkit;
+package com.shirkit.todo;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -15,11 +15,11 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent;
 
-import com.shirkit.entity.Options;
-import com.shirkit.entity.Task;
-import com.shirkit.entity.TaskHolder;
-import com.shirkit.handler.DrawHandler;
-import com.shirkit.manager.Manager;
+import com.shirkit.todo.entity.Options;
+import com.shirkit.todo.entity.Task;
+import com.shirkit.todo.entity.TaskHolder;
+import com.shirkit.todo.handler.DrawHandler;
+import com.shirkit.todo.manager.Manager;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Instance;

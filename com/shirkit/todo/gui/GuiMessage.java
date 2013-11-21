@@ -1,4 +1,4 @@
-package com.shirkit.gui;
+package com.shirkit.todo.gui;
 
 public enum GuiMessage {
 

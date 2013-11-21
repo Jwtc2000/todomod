@@ -1,9 +1,9 @@
-package com.shirkit.gui.components;
+package com.shirkit.todo.gui.components;
 
 import codechicken.nei.Button;
 
-import com.shirkit.entity.Task;
-import com.shirkit.logic.TaskListener;
+import com.shirkit.todo.entity.Task;
+import com.shirkit.todo.logic.TaskListener;
 
 public abstract class FieldCompletedCheckbox extends Button implements TaskListener {
 

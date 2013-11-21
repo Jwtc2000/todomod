@@ -1,6 +1,6 @@
-package com.shirkit.handler;
+package com.shirkit.todo.handler;
 
-import com.shirkit.manager.Manager;
+import com.shirkit.todo.manager.Manager;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;

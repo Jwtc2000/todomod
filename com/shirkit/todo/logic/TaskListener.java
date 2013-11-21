@@ -1,6 +1,6 @@
-package com.shirkit.logic;
+package com.shirkit.todo.logic;
 
-import com.shirkit.entity.Task;
+import com.shirkit.todo.entity.Task;
 
 public interface TaskListener {
 

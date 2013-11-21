@@ -1,11 +1,11 @@
-package com.shirkit;
+package com.shirkit.todo;
 
 import codechicken.nei.api.IConfigureNEI;
 import codechicken.nei.forge.GuiContainerManager;
 
-import com.shirkit.handler.DrawHandler;
-import com.shirkit.handler.InputHandler;
-import com.shirkit.handler.TooltipHandler;
+import com.shirkit.todo.handler.DrawHandler;
+import com.shirkit.todo.handler.InputHandler;
+import com.shirkit.todo.handler.TooltipHandler;
 
 public class NEITodoConfig implements IConfigureNEI {
 

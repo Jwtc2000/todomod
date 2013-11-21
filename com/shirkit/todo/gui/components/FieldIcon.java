@@ -1,4 +1,4 @@
-package com.shirkit.gui.components;
+package com.shirkit.todo.gui.components;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +11,8 @@ import codechicken.nei.Widget;
 import codechicken.nei.recipe.GuiCraftingRecipe;
 import codechicken.nei.recipe.GuiUsageRecipe;
 
-import com.shirkit.entity.Task;
-import com.shirkit.logic.TaskListener;
+import com.shirkit.todo.entity.Task;
+import com.shirkit.todo.logic.TaskListener;
 
 import net.minecraft.item.ItemStack;
 

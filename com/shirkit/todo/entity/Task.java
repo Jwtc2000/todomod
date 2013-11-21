@@ -1,4 +1,4 @@
-package com.shirkit.entity;
+package com.shirkit.todo.entity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import com.shirkit.logic.TaskListener;
+import com.shirkit.todo.logic.TaskListener;
 
 import net.minecraft.item.ItemStack;
 
