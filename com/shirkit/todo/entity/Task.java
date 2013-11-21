@@ -1,25 +1,31 @@
 package com.shirkit.todo.entity;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementRef;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
 
 import com.shirkit.todo.logic.TaskListener;
 
 import net.minecraft.item.ItemStack;
 
+@XmlSeeAlso({ Category.class, Category.Any.class })
 public class Task {
-	
+
 	private String name;
 	private int prirority;
 	private boolean completed;
 	private ItemStack reference;
-	private List<Task> subtasks;
 	private List<TaskListener> listeners;
-	@XmlElement
 	private int itemID, itemDamage;
+	@XmlElement
+	protected List<Task> subtasks;
+	private List<Task> immutable;
 
 	public Task() {
 		this.name = "";
@@ -69,9 +75,23 @@ public class Task {
 		updateListener();
 	}
 
-	@XmlElement
-	public List<Task> getSubtasks() {
-		return subtasks;
+	public void addTask(Task toAdd) {
+		subtasks.add(toAdd);
+	}
+
+	public boolean removeTask(Task toRemove) {
+		return subtasks.remove(toRemove);
+	}
+
+	/**
+	 * Do not try to edit this collection, as it's immutable.
+	 * 
+	 * @return
+	 */
+	public List<Task> listSubtasks() {
+		if (immutable == null)
+			immutable = Collections.unmodifiableList(subtasks);
+		return immutable;
 	}
 
 	public void setListener(TaskListener listener) {
@@ -82,16 +102,17 @@ public class Task {
 		for (TaskListener listener : listeners)
 			listener.update(this);
 	}
-	
+
+	@XmlElement
 	int getItemID() {
 		return itemID;
 	}
-	
+
+	@XmlElement
 	int getItemDamage() {
 		return itemDamage;
 	}
 
-	// TODO need task it to synch with server?
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null)

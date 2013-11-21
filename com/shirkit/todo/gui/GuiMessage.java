@@ -6,6 +6,7 @@ public enum GuiMessage {
 	NEXT_PAGE,
 	BACK,
 	ADD_TASK,
+	ADD_CATEGORY,
 	DELETE,
 	COMPLETE,
 	SELECT

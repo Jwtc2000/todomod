@@ -3,7 +3,9 @@ package com.shirkit.todo.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -15,26 +17,26 @@ import codechicken.nei.forge.GuiContainerManager;
 @XmlRootElement
 public class TaskHolder {
 
-	private List<Task> activeTasks, completedTasks;
+	private List<Category> categories;
 
 	public TaskHolder() {
-		activeTasks = new ArrayList<Task>();
-		completedTasks = new ArrayList<Task>();
 	}
 
-	public void loadTasks() {
-		// we need to re-assign in this method in case JAXB replaces with a null instance
-		if (activeTasks != null)
-			for (Task task : activeTasks)
-				loadTask(task);
-		else
-			activeTasks = new ArrayList<Task>();
+	public void init() {
+		// we need to re-assign in this method in case JAXB replaces with a null
+		// instance
 
-		if (completedTasks != null)
-			for (Task task : completedTasks)
-				loadTask(task);
-		else
-			completedTasks = new ArrayList<Task>();
+		if (categories == null || categories.isEmpty()) {
+			categories = new ArrayList<Category>();
+			categories.add(new Category.Any(this));
+		} else
+			for (Category each : categories) {
+				if (each instanceof Category.Any)
+					((Category.Any) each).setHolder(this);
+
+				for (Task task : each.listSubtasks())
+					loadTask(task);
+			}
 	}
 
 	private void loadTask(Task task) {
@@ -43,24 +45,16 @@ public class TaskHolder {
 			stack.setItemDamage(task.getItemDamage());
 			task.setReference(stack);
 		}
-		for (Task sub : task.getSubtasks())
+		for (Task sub : task.listSubtasks())
 			loadTask(sub);
 	}
 
-	public List<Task> getActiveTasks() {
-		return activeTasks;
+	@XmlElement
+	public List<Category> getCategories() {
+		return categories;
 	}
 
-	public List<Task> getCompletedTasks() {
-		return completedTasks;
+	public void setCategories(List<Category> categories) {
+		this.categories = categories;
 	}
-
-	public void setActiveTasks(List<Task> activeTasks) {
-		this.activeTasks = activeTasks;
-	}
-
-	public void setCompletedTasks(List<Task> completedTasks) {
-		this.completedTasks = completedTasks;
-	}
-
 }

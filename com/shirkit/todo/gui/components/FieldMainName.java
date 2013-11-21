@@ -17,8 +17,8 @@ import com.shirkit.todo.logic.TaskListener;
 public class FieldMainName extends TextField implements TaskListener {
 
 	private Task task;
-	private TaskListener listener;
 	private int move = 0;
+	private boolean editable = true;
 
 	public FieldMainName(Task task) {
 		super(task.toString());
@@ -27,19 +27,23 @@ public class FieldMainName extends TextField implements TaskListener {
 		setText(task.getName());
 	}
 
-	public void setListener(TaskListener listener) {
-		this.listener = listener;
-	}
-
 	@Override
+	@Deprecated
+	/**
+	 * Don't use this to check for modifications
+	 */
 	public void onTextChange(String oldText) {
 		move = 0;
 		if (updating) {
+			// avoid looping in event firing
 			return;
 		}
 		task.setName(this.text());
-		if (listener != null)
-			listener.update(task);
+		onTextChanged(oldText);
+	}
+
+	public void onTextChanged(String oldText) {
+
 	}
 
 	@Override
@@ -75,7 +79,17 @@ public class FieldMainName extends TextField implements TaskListener {
 	}
 
 	@Override
+	public void setFocus(boolean focus) {
+		if (focus && !editable) {
+			super.setFocus(false);
+		} else
+			super.setFocus(focus);
+	}
+
+	@Override
 	public boolean handleKeyPress(int keyID, char keyChar) {
+		if (!focused() || !editable)
+			return false;
 		boolean s = true;
 		if (Keyboard.KEY_LEFT == keyID)
 			move -= 1;
@@ -118,8 +132,7 @@ public class FieldMainName extends TextField implements TaskListener {
 		if (!contains(mx, my) || focused())
 			return tooltip;
 
-		Pattern regex = Pattern.compile("(.{1,20}(?:\\s|$))|(.{0,20})",
-				Pattern.DOTALL);
+		Pattern regex = Pattern.compile("(.{1,20}(?:\\s|$))|(.{0,20})", Pattern.DOTALL);
 		Matcher regexMatcher = regex.matcher(text());
 		while (regexMatcher.find()) {
 			if (!regexMatcher.group().isEmpty())
@@ -138,4 +151,11 @@ public class FieldMainName extends TextField implements TaskListener {
 		updating = false;
 	}
 
+	public void setEditable(boolean editable) {
+		this.editable = editable;
+	}
+
+	public Task getTask() {
+		return task;
+	}
 }

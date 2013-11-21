@@ -4,6 +4,6 @@ import com.shirkit.todo.entity.Task;
 
 public interface GuiListener {
 
-	public void update(GuiMessage message, Task about);
+	public void update(GuiMessage message, Object about);
 
 }

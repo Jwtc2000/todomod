@@ -15,6 +15,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent;
 
+import com.shirkit.todo.entity.Category;
 import com.shirkit.todo.entity.Options;
 import com.shirkit.todo.entity.Task;
 import com.shirkit.todo.entity.TaskHolder;
@@ -66,45 +67,49 @@ public class Todo {
 	@ForgeSubscribe
 	public void onWorldLoad(WorldEvent.Load event) {
 		// Hacked the Minecraft class to get the Server name!
-		try {
-			if (event.world.provider.dimensionId == 0 && !wasLoaded) {
+		if (event.world.provider.dimensionId == 0 && !wasLoaded) {
 
-				Field[] fields = Minecraft.getMinecraft().getClass().getDeclaredFields();
-				for (Field field : fields) {
-					if (field.getGenericType().toString().equals(ServerData.class.toString())) {
-						boolean b = field.isAccessible();
-						field.setAccessible(true);
-						ServerData obj = (ServerData) field.get(Minecraft.getMinecraft());
-						if (obj == null)
-							serverName = MinecraftServer.getServer().getWorldName();
-						else
-							serverName = obj.serverName;
-
-						if (!b)
-							field.setAccessible(false);
+			Field[] fields = Minecraft.getMinecraft().getClass().getDeclaredFields();
+			for (Field field : fields) {
+				if (field.getGenericType().toString().equals(ServerData.class.toString())) {
+					boolean b = field.isAccessible();
+					field.setAccessible(true);
+					ServerData obj = null;
+					try {
+						obj = (ServerData) field.get(Minecraft.getMinecraft());
+					} catch (IllegalArgumentException e) {
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
 					}
+					if (obj == null)
+						serverName = MinecraftServer.getServer().getWorldName();
+					else
+						serverName = obj.serverName;
+
+					if (!b)
+						field.setAccessible(false);
 				}
+			}
 
-				dir = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + "todomod");
-				dir.mkdirs();
-				server = new File(dir, serverName);
-				Manager.newInstances();
+			dir = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + "todomod");
+			dir.mkdirs();
+			server = new File(dir, serverName);
 
-				if (server.exists()) {
-					JAXBContext context = JAXBContext.newInstance(TaskHolder.class, Task.class);
+			Manager.newInstances();
+			DrawHandler.init = true;
+			wasLoaded = true;
+
+			if (server.exists()) {
+				try {
+					JAXBContext context = JAXBContext.newInstance(TaskHolder.class, Task.class, Category.class, Category.Any.class);
 					Unmarshaller unmarshaller = context.createUnmarshaller();
 					TaskHolder th = (TaskHolder) unmarshaller.unmarshal(server);
-					th.loadTasks();
-					Manager.getHolder().setActiveTasks(th.getActiveTasks());
-					Manager.getHolder().setCompletedTasks(th.getCompletedTasks());
+					Manager.getHolder().setCategories(th.getCategories());
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-				
-				DrawHandler.init = true;
-
-				wasLoaded = true;
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 
@@ -116,14 +121,13 @@ public class Todo {
 
 			JAXBContext context;
 			try {
-				context = JAXBContext.newInstance(TaskHolder.class, Task.class);
+				context = JAXBContext.newInstance(TaskHolder.class, Task.class, Category.class, Category.Any.class);
 				Marshaller marshaller = context.createMarshaller();
 				marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 				marshaller.marshal(Manager.getHolder(), server);
 			} catch (JAXBException e) {
 				e.printStackTrace();
 			}
-
 		}
 	}
 

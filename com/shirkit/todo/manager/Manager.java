@@ -2,6 +2,7 @@ package com.shirkit.todo.manager;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 
+import com.shirkit.todo.entity.Category;
 import com.shirkit.todo.entity.TaskHolder;
 import com.shirkit.todo.gui.Layout;
 import com.shirkit.todo.logic.Logic;
@@ -19,8 +20,12 @@ public class Manager {
 	}
 
 	public static void init(GuiContainer gui) {
+		holder.init();
 		layout.init(gui, holder);
 		logic.init(layout, holder);
+	}
+
+	public static void finalizeInstances() {
 	}
 
 	public static TaskHolder getHolder() {

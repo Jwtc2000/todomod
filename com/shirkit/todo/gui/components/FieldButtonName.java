@@ -10,7 +10,7 @@ import com.shirkit.todo.entity.Task;
 import com.shirkit.todo.logic.TaskListener;
 import com.shirkit.todo.logic.TaskSelector;
 
-public abstract class FieldButtonName extends Button implements TaskListener {
+public abstract class FieldButtonName extends MyButton implements TaskListener {
 
 	private Task task;
 	private String realLabel;

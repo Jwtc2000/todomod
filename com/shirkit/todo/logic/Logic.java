@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Stack;
 
+import com.shirkit.todo.entity.Category;
 import com.shirkit.todo.entity.Options;
 import com.shirkit.todo.entity.Task;
 import com.shirkit.todo.entity.TaskHolder;
@@ -16,121 +17,194 @@ public class Logic implements GuiListener {
 	private Layout layout;
 	private TaskHolder holder;
 	private Stack<Task> stack;
-	private int currentPage;
+	private Stack<Integer> pages;
 	private Sorter sorter;
+	private Category selected;
 
 	public Logic() {
 		stack = new Stack<Task>();
-		this.sorter = new Sorter();
+		pages = new Stack<Integer>();
+		sorter = new Sorter();
+		pages.push(0);
 	}
 
 	public void init(Layout layout, TaskHolder holder) {
 		this.layout = layout;
 		this.holder = holder;
 		layout.setListener(this);
-		layout.showMainScreen(currentPage);
+		layout.showMain(pages.peek());
 	}
 
 	@Override
-	public void update(GuiMessage message, Task about) {
-		switch (message) {
-		case ADD_TASK:
+	public void update(GuiMessage message, Object obj) {
 
-			Task newOne = new Task();
-			if (!stack.isEmpty()) {
-				// has a parent
-				stack.peek().getSubtasks().add(newOne);
-				layout.showTask(stack.peek());
-			} else {
-				// no parent
-				holder.getActiveTasks().add(newOne);
-				stack.push(newOne);
-				layout.showTask(newOne);
-			}
+		try {
 
-			break;
+			switch (message) {
+			case ADD_TASK:
 
-		case BACK:
-			stack.pop();
-			if (!stack.isEmpty())
-				layout.showTask(stack.peek());
-			else
-				layout.showMainScreen(currentPage);
-
-			break;
-
-		case COMPLETE:
-
-			if (about.isCompleted()) {
-				about.setCompleted(false);
-				// only add if it's on the main completed task list
-				if (holder.getCompletedTasks().remove(about))
-					holder.getActiveTasks().add(about);
-			} else {
-				about.setCompleted(true);
-				if (holder.getActiveTasks().remove(about))
-					holder.getCompletedTasks().add(about);
-			}
-
-			if (stack.isEmpty())
-				layout.showMainScreen(currentPage);
-
-			break;
-
-		case DELETE:
-			if (about.equals(stack.peek())) {
-				// deleting current task
-				stack.pop();
-				if (!holder.getActiveTasks().remove(about)) {
-					holder.getCompletedTasks().remove(about);
+				Task newOne = new Task();
+				if (!(stack.peek() instanceof Category)) {
+					// has a parent
+					stack.peek().addTask(newOne);
+					layout.showTask(stack.peek());
+				} else {
+					// no parent
+					stack.peek().addTask(newOne);
+					stack.push(newOne);
+					pages.push(0);
+					layout.showTask(newOne);
 				}
-				layout.showMainScreen(currentPage);
-			} else {
-				// deleting a sub task
-				stack.peek().getSubtasks().remove(about);
-				layout.showTask(stack.peek());
+
+				break;
+
+			case ADD_CATEGORY:
+
+				Category cat = new Category();
+				stack.push(cat);
+				pages.push(0);
+				holder.getCategories().add(cat);
+				layout.showCategory(cat, pages.peek());
+
+				break;
+
+			case BACK:
+
+				stack.pop();
+				pages.pop();
+				if (!stack.isEmpty()) {
+					if (stack.peek() instanceof Category)
+						layout.showCategory((Category) stack.peek(), pages.peek());
+					else
+						layout.showTask(stack.peek());
+				} else {
+					layout.showMain(pages.peek());
+					selected = null;
+				}
+
+				break;
+
+			case COMPLETE:
+
+				Task about = (Task) obj;
+
+				if (about.isCompleted()) {
+					about.setCompleted(false);
+				} else {
+					about.setCompleted(true);
+				}
+
+				if (stack.peek() instanceof Category)
+					layout.showCategory((Category) stack.peek(), pages.peek());
+				else if (stack.isEmpty())
+					layout.showMain(pages.peek());
+
+				break;
+
+			case DELETE:
+
+				if (obj.equals(stack.peek())) {
+					// deleting current shown item
+					stack.pop();
+					pages.pop();
+					if (stack.isEmpty()) {
+						// deleting a category
+						holder.getCategories().remove(obj);
+					} else {
+						stack.peek().removeTask((Task) obj);
+					}
+
+					if (stack.isEmpty())
+						// We deleted a category
+						layout.showMain(pages.peek());
+					else if (stack.peek() instanceof Category)
+						// We deleted a task within a category
+						layout.showCategory((Category) stack.peek(), pages.peek());
+					else
+						// We deleted a sub-task
+						layout.showTask(stack.peek());
+				} else {
+					// Deleted without selecting (i.e. sub-task within a task)
+					stack.peek().removeTask((Task) obj);
+					layout.showTask(stack.peek());
+				}
+
+				break;
+
+			case NEXT_PAGE:
+
+				int c = pages.pop() + 1;
+
+				float math;
+
+				if (stack.isEmpty()) {
+					// main screen
+					math = (float) holder.getCategories().size() / (float) Options.getInstance().getMaxTasksOnScreen();
+
+				} else {
+					// Discover the fraction of the number of pages to be
+					// displayed
+					math = (float) selected.getActiveTasks().size() / (float) Options.getInstance().getMaxTasksOnScreen();
+
+					if (Options.getInstance().showCompletedTasks())
+						math += (float) selected.getCompletedTasks().size() / (float) Options.getInstance().getMaxTasksOnScreen();
+				}
+
+				// Only add one extra page if we have any fraction
+				int maxPages = ((int) math) == math ? (int) math : (int) math + 1;
+
+				if (c < maxPages) {
+					if (stack.isEmpty())
+						layout.showMain(c);
+					else
+						layout.showCategory((Category) stack.peek(), c);
+				} else
+					c--;
+
+				pages.push(c);
+
+				break;
+
+			case PREVIOUS_PAGE:
+
+				int cc = pages.pop();
+
+				if (cc > 0) {
+					cc--;
+
+					if (stack.isEmpty())
+						layout.showMain(cc);
+					else
+						layout.showCategory((Category) stack.peek(), cc);
+
+					pages.push(cc);
+				}
+
+				break;
+
+			case SELECT:
+
+				if (obj instanceof Category) {
+					Category cat3 = (Category) obj;
+					stack.push(cat3);
+					pages.push(0);
+					selected = cat3;
+					layout.showCategory((Category) stack.peek(), pages.peek());
+
+				} else {
+					Task about3 = (Task) obj;
+					stack.push(about3);
+					pages.push(0);
+					layout.showTask(about3);
+				}
+
+				break;
+
+			default:
+				break;
 			}
-
-			break;
-
-		case NEXT_PAGE:
-
-			currentPage++;
-
-			// Discover the fraction of the number of pages to be displayed
-			float math = (float) holder.getActiveTasks().size() / (float) Options.getInstance().getMaxTasksOnScreen();
-
-			if (Options.getInstance().showCompletedTasks())
-				math += (float) holder.getCompletedTasks().size() / (float) Options.getInstance().getMaxTasksOnScreen();
-
-			// Only add one extra page if we have any fraction
-			int maxPages = ((int) math) == math ? (int) math : (int) math + 1;
-
-			if (currentPage < maxPages)
-				layout.showMainScreen(currentPage);
-			else
-				currentPage--;
-
-			break;
-
-		case PREVIOUS_PAGE:
-
-			if (currentPage > 0) {
-				currentPage--;
-				layout.showMainScreen(currentPage);
-			}
-
-			break;
-
-		case SELECT:
-
-			stack.push(about);
-			layout.showTask(about);
-
-			break;
-
-		default:
-			break;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
