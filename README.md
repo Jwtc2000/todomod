@@ -1,9 +1,11 @@
 todomod
-
+========
 forked from Shirkit/todomod
 
 this fork is just for messing around with java :p
-=======
+--------------------------------------
+
+
 
 Todo mod is a mod for Minecraft that aims providing players with a practical and easy To-Do list in-game.
 
